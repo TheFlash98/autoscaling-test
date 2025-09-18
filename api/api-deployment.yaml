@@ -41,3 +41,20 @@ spec:
           value: mysql
         ports:
         - containerPort: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fastapi-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: fastapi-simple-server-service
+            port:
+              number: 8000
