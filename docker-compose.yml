@@ -26,3 +26,4 @@ services:
       MYSQL_ROOT_PASSWORD: P@ssw0rd
       MYSQL_PASSWORD: P4ssw0rd
       MYSQL_DATABASE: fastapi_app
+      MYSQL_HOST: db
