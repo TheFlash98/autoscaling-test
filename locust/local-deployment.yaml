@@ -11,7 +11,7 @@ data:
 
         @task 
         def hello_world(self): 
-            self.client.get("/", headers={"Host": "example.com"}) 
+            self.client.get("/") 
 --- 
 apiVersion: apps/v1 
 kind: Deployment 
