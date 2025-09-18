@@ -28,5 +28,16 @@ spec:
       containers:
       - name: fastapi-simple-server
         image: sarthak5784/fastapi-simple-server
+        env:
+        - name: MYSQL_USER
+          value: appuser
+        - name: MYSQL_PASSWORD
+          value: P4ssw0rd
+        - name: MYSQL_ROOT_PASSWORD
+          value: P@ssw0rd
+        - name: MYSQL_DATABASE
+          value: fastapi_app
+        - name: MYSQL_HOST
+          value: mysql
         ports:
         - containerPort: 8000
