@@ -1,3 +1,4 @@
 controller.enableLatencyMetrics: true
+controller.metrics.enabled: true
 prometheus.service.create: true
 prometheus.serviceMonitor.create: true
