@@ -28,7 +28,12 @@ spec:
     spec: 
       containers: 
         - name: locust 
-          image: locustio/locust 
+          image: locustio/locust
+          resources:
+            requests:
+              cpu: "2"
+            limits:
+              cpu: "2"
           ports: 
             - containerPort: 8089 
           volumeMounts: 
