@@ -31,9 +31,9 @@ spec:
           image: locustio/locust
           resources:
             requests:
-              cpu: "2"
+              cpu: "2000m"
             limits:
-              cpu: "2"
+              cpu: "2000m"
           ports: 
             - containerPort: 8089 
           volumeMounts: 
