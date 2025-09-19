@@ -28,6 +28,7 @@ spec:
       containers:
       - name: fastapi-simple-server
         image: sarthak5784/fastapi-simple-server
+        imagePullPolicy: Always
         env:
         - name: MYSQL_USER
           value: appuser
