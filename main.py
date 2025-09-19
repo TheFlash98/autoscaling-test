@@ -18,7 +18,7 @@ mysql_port = os.getenv("MYSQL_PORT", "3306")
 mysql_database = os.getenv("MYSQL_DATABASE", "fastapi_app")
 mysql_url = f"mysql+pymysql://{mysql_user}:{mysql_password}@{mysql_host}:{mysql_port}/{mysql_database}"
 
-engine = create_engine(mysql_url)
+engine = create_engine(mysql_url, pool_size=10, max_overflow=120)
 
 
 def create_db_and_tables():
