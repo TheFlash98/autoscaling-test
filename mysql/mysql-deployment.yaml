@@ -1,4 +1,13 @@
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+data:
+  mysqld.cnf: |
+    [mysqld]
+    max_connections = 5000
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: mysql
@@ -49,7 +58,15 @@ spec:
         volumeMounts:
         - name: mysql-persistent-storage
           mountPath: /var/lib/mysql
+        - name: mysql-config-volume
+          mountPath: /etc/mysql/conf.d 
       volumes:
       - name: mysql-persistent-storage
         persistentVolumeClaim:
           claimName: mysql-pv-claim
+      - name: mysql-config-volume
+        configMap:
+          name: mysql-config
+          items:
+          - key: mysqld.cnf
+            path: mysqld.cnf
