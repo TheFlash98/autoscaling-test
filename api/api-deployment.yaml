@@ -29,6 +29,11 @@ spec:
       - name: fastapi-simple-server
         image: sarthak5784/fastapi-simple-server
         imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: "512m" 
+          requests:
+            cpu: "512m"
         env:
         - name: MYSQL_USER
           value: appuser
