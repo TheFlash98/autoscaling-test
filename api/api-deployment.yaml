@@ -25,6 +25,7 @@ spec:
       labels:
         app: fastapi-simple-server
     spec:
+      nodeName: node-0
       containers:
       - name: fastapi-simple-server
         image: sarthak5784/fastapi-simple-server
