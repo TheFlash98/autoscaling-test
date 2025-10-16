@@ -1,0 +1,5 @@
+cpuManagerPolicy: static
+kubeReserved:
+  cpu: "1"
+systemReserved:
+  cpu: "1"
