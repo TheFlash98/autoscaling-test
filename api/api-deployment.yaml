@@ -65,10 +65,10 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: test
+            name: fastapi-simple-server-service
             port:
-              number: 8080
+              number: 8000
   tls:
-    - secretName: mycerts # use mycerts for host test.com
+    - secretName: mycerts
       hosts:
         - test.com

@@ -9,27 +9,39 @@ helm upgrade ingress-nginx ingress-nginx \
 --set-string controller.podAnnotations."prometheus\.io/port"="10254"
 kubectl apply --kustomize github.com/kubernetes/ingress-nginx/deploy/prometheus/ -n ingress-nginx
 
-# kubectl create namespace caddy-system
-# helm install \
-#   --namespace=caddy-system \
-#   --repo https://caddyserver.github.io/ingress/ \
-#   --atomic \
-#   mycaddy \
-#   caddy-ingress-controller
+kubectl create namespace caddy-system
+helm install \
+  --namespace=caddy-system \
+  --repo https://caddyserver.github.io/ingress/ \
+  --atomic \
+  mycaddy \
+  caddy-ingress-controller
 
-# helm upgrade \
-#   --namespace=caddy-system \
-#   --repo https://caddyserver.github.io/ingress/ \
-#   --atomic \
-#   --set ingressController.config.email=sarthak.k@nyu.edu \
-#   --set ingressController.config.onDemandTLS=true \
-#   mycaddy \
-#   caddy-ingress-controller
+helm upgrade \
+  --namespace=caddy-system \
+  --repo https://caddyserver.github.io/ingress/ \
+  --atomic \
+  --set ingressController.config.email=sarthak.k@nyu.edu \
+  --set ingressController.config.onDemandTLS=true \
+  mycaddy \
+  caddy-ingress-controller
+
+openssl req -x509 -nodes -days 365 \
+  -newkey rsa:2048 \
+  -keyout mykey.pem \
+  -out mycert.pem \
+  -subj "/CN=test.com/O=test.com"
+
+kubectl create secret tls mycerts \
+  --cert=mycert.pem \
+  --key=mykey.pem \
+  -n testing
+
 
 
 git clone https://github.com/TheFlash98/autoscaling-test.git
 cd autoscaling-test
-kubectl create namespace testingkubectl create namespace testing
+kubectl create namespace testing
 kubectl apply -f mysql/mysql-pv.yaml -n testing
 kubectl apply -f mysql/mysql-deployment.yaml -n testing
 kubectl apply -f api/api-deployment.yaml -n testing
