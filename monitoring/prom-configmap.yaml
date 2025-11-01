@@ -42,9 +42,5 @@ data:
 
       # --- Caddy Metrics ---
       - job_name: 'caddy'
-        kubernetes_sd_configs:
-          - role: endpoints
-        relabel_configs:
-          - source_labels: [__meta_kubernetes_service_name]
-            action: keep
-            regex: caddy-metrics
+        static_configs:
+          - targets: ['caddy-metrics.caddy-system.svc.cluster.local:9765']
