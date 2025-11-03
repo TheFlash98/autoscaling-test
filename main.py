@@ -1,6 +1,10 @@
 from typing import Annotated, Union
 
 from fastapi import Depends, FastAPI, HTTPException, Query
+from prometheus_client import make_asgi_app
+from prometheus_fastapi_instrumentator import Instrumentator
+
+
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 import os
 
@@ -33,7 +37,11 @@ def get_session():
 SessionDep = Annotated[Session, Depends(get_session)]
 
 app = FastAPI()
+Instrumentator().instrument(app).expose(app)
 
+# Add prometheus asgi middleware to route /metrics requests
+metrics_app = make_asgi_app()
+app.mount("/metrics", metrics_app)
 
 @app.on_event("startup")
 def on_startup():
