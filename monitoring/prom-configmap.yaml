@@ -9,38 +9,10 @@ data:
       scrape_interval: 15s
 
     scrape_configs:
-      # --- Kubernetes API Metrics ---
-      - job_name: 'kubernetes-nodes'
-        kubernetes_sd_configs:
-          - role: node
-        relabel_configs:
-          - action: labelmap
-            regex: __meta_kubernetes_node_label_(.+)
-          - target_label: __address__
-            replacement: kubernetes.default.svc:443
-          - source_labels: [__meta_kubernetes_node_name]
-            regex: (.+)
-            target_label: node
-
-      # --- Kubernetes Pods ---
-      - job_name: 'kubernetes-pods'
-        kubernetes_sd_configs:
-          - role: pod
-        relabel_configs:
-          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
-            action: keep
-            regex: true
-          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
-            action: replace
-            target_label: __metrics_path__
-            regex: (.+)
-          - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
-            action: replace
-            regex: ([^:]+)(?::\d+)?;(\d+)
-            replacement: $1:$2
-            target_label: __address__
-
-      # --- Caddy Metrics ---
       - job_name: 'caddy'
         static_configs:
           - targets: ['caddy-metrics.caddy-system.svc.cluster.local:9765']
+      
+      - job_name: 'mysql-exporter'
+        static_configs:
+          - targets: ['mysql-exporter-service.testing.svc.cluster.local:9104']
