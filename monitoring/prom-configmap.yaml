@@ -20,3 +20,7 @@ data:
       - job_name: 'fastapi'
         static_configs:
           - targets: ['fastapi-simple-server-service.testing.svc.cluster.local:8000']
+        
+      - job_name: 'kube-state-metrics'
+        static_configs:
+          - targets: ['kube-state-metrics.kube-system.svc.cluster.local:8080']
