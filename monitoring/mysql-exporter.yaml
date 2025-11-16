@@ -45,6 +45,7 @@ spec:
           image: prom/mysqld-exporter:v0.15.0
           args:
             - "--config.my-cnf=/etc/mysql/.my.cnf"
+            - "--collect.perf_schema.eventsstatements"
           ports:
             - name: metrics
               containerPort: 9104
