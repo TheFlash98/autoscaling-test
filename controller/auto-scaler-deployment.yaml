@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pid-autoscaler
+  namespace: testing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pid-autoscaler
+  template:
+    metadata:
+      labels:
+        app: pid-autoscaler
+    spec:
+      nodeName: node-0
+      containers:
+      - name: pid-autoscaler
+        image: sarthak5784/pid-autoscaler:latest
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: "500m" 
+          requests:
+            cpu: "500m"
+        env:
+        - name: PROMETHEUS_URL
+          value: http://prometheus.monitoring.svc.cluster.local:9090
+        - name: PID_KP
+          value: 0.5
+        - name: PID_KI
+          value: 0.05
+        - name: PID_KD
+          value: 0.1
+        - name: PID_SETPOINT
+          value: 0.01
+        - name: SCALING_FACTOR
+          value: 20
