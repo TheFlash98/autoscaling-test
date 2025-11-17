@@ -4,6 +4,13 @@ from query_prom import PrometheusClient
 from pid_controller import PIDController
 import os
 
+import logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s",
+)
+log = logging.getLogger(__name__)
+
 def autoscale_loop(deployment_name, pod_pattern, namespace="default"):
     Kp = float(os.getenv("PID_KP", 0.5))
     Ki = float(os.getenv("PID_KI", 0.05))
@@ -18,7 +25,7 @@ def autoscale_loop(deployment_name, pod_pattern, namespace="default"):
     max_replicas = 100
 
     current_replicas = k8s_scaler.get_replicas(deployment_name)
-    print(f"Starting autoscaler for deployment '{deployment_name}' with {current_replicas} replicas")
+    log.info(f"Starting autoscaler for deployment '{deployment_name}' with {current_replicas} replicas")
     last_latency = None
     last_scaled = False  # track if we just scaled
 
@@ -28,24 +35,24 @@ def autoscale_loop(deployment_name, pod_pattern, namespace="default"):
             time.sleep(30)
             continue
 
-        print(f"Current p99 latency: {p99_latency:.3f}s")
+        log.info(f"Current p99 latency: {p99_latency:.3f}s")
 
         # Check if last scale reduced latency
         if last_scaled and last_latency is not None:
             if p99_latency >= last_latency:
-                print(f"Latency did not improve after last scale ({last_latency:.3f}s -> {p99_latency:.3f}s), waiting...")
+                log.info(f"Latency did not improve after last scale ({last_latency:.3f}s -> {p99_latency:.3f}s), waiting...")
                 time.sleep(15)
                 continue  # skip scaling until latency improves
 
         # Compute control signal
         control = pid.compute(p99_latency)
         adjustment = control * factor
-        print(f"p99 latency={p99_latency:.3f}s, control={control:.4f}, adjustment={adjustment:.2f}")
+        log.info(f"p99 latency={p99_latency:.3f}s, control={control:.4f}, adjustment={adjustment:.2f}")
 
         new_replicas = current_replicas + adjustment
         if abs(adjustment) > 2:  # only scale for significant changes
             new_replicas = max(min_replicas, min(max_replicas, round(new_replicas)))
-            print(f"Adjusting replicas from {current_replicas} to {new_replicas}")
+            log.info(f"Adjusting replicas from {current_replicas} to {new_replicas}")
             if new_replicas != current_replicas:
                 k8s_scaler.scale_deployment(deployment_name, new_replicas)
                 if new_replicas > current_replicas:
