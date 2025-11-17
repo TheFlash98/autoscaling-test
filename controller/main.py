@@ -48,12 +48,18 @@ def autoscale_loop(deployment_name, pod_pattern, namespace="default"):
             print(f"Adjusting replicas from {current_replicas} to {new_replicas}")
             if new_replicas != current_replicas:
                 k8s_scaler.scale_deployment(deployment_name, new_replicas)
-                last_scaled = True
-                last_latency = p99_latency
+                if new_replicas > current_replicas:
+                    last_scaled = True
+                    last_latency = p99_latency
+                else:
+                    # scaled down
+                    last_scaled = False
                 current_replicas = new_replicas
             else:
+                # no action needed
                 last_scaled = False
         else:
+            # no action needed
             last_scaled = False
 
         time.sleep(30)
