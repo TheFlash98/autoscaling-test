@@ -1,6 +1,9 @@
 from kubernetes import client, config
 from kubernetes.client.rest import ApiException
+import logging
 
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger(__name__)
 
 class K8sScaler:
     def __init__(self, namespace: str = "default"):
@@ -15,7 +18,7 @@ class K8sScaler:
             )
             return dep.spec.replicas
         except ApiException as e:
-            print(f"Error reading deployment '{deployment_name}': {e}")
+            log.info(f"Error reading deployment '{deployment_name}': {e}")
             return -1
 
     def scale_deployment(self, deployment_name: str, replicas: int) -> bool:
@@ -24,10 +27,10 @@ class K8sScaler:
             self.apps_v1.patch_namespaced_deployment_scale(
                 name=deployment_name, namespace=self.namespace, body=body
             )
-            print(f"Deployment '{deployment_name}' scaled to {replicas} replicas")
+            log.info(f"Deployment '{deployment_name}' scaled to {replicas} replicas")
             return True
         except ApiException as e:
-            print(f"Error scaling deployment '{deployment_name}': {e}")
+            log.info(f"Error scaling deployment '{deployment_name}': {e}")
             return False
 
     def ensure_replicas(self, deployment_name: str, desired: int):
@@ -35,10 +38,10 @@ class K8sScaler:
         if current == -1:
             return
         if current != desired:
-            print(f"Current replicas: {current}, scaling to {desired}")
+            log.info(f"Current replicas: {current}, scaling to {desired}")
             self.scale_deployment(deployment_name, desired)
         else:
-            print(f"Deployment '{deployment_name}' already at desired replicas: {desired}")
+            log.info(f"Deployment '{deployment_name}' already at desired replicas: {desired}")
 
 
 if __name__ == "__main__":

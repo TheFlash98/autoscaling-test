@@ -1,6 +1,10 @@
 import time
 import csv
 import os
+import logging
+
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger(__name__)
 
 class PIDController:
     def __init__(self, Kp, Ki, Kd, setpoint, csv_file="pid_log.csv"):
@@ -45,8 +49,8 @@ class PIDController:
         self.last_error = error
         self.last_time = current_time
 
-        # Print debug
-        print(f"PID Debug -> P: {P:.4f}, I: {I:.4f}, D: {D:.4f}")
+        # log.info debug
+        log.info(f"PID Debug -> P: {P:.4f}, I: {I:.4f}, D: {D:.4f}")
 
         # Append to CSV
         with open(self.csv_file, mode="a", newline="") as f:
