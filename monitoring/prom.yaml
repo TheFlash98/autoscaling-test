@@ -59,6 +59,9 @@ rules:
     resources:
       - nodes
       - nodes/proxy
+      - pods
+      - services
+      - endpoints
     verbs: ["get", "list", "watch"]
   - nonResourceURLs:
       - "/metrics"
