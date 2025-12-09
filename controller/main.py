@@ -30,7 +30,7 @@ def autoscale_loop(deployment_name, pod_pattern, namespace="default"):
     last_scaled = False  # track if we just scaled
 
     while True:
-        p99_latency = prom.p99_latency("/heroes/{hero_id}", job="fastapi-pods", window="5m")
+        p99_latency = prom.p99_latency("/heroes/{hero_id}", job="fastapi-pods", window="1m")
         if p99_latency is None:
             time.sleep(30)
             continue
@@ -57,7 +57,6 @@ def autoscale_loop(deployment_name, pod_pattern, namespace="default"):
                 k8s_scaler.scale_deployment(deployment_name, new_replicas)
                 if new_replicas > current_replicas:
                     last_scaled = True
-                    last_latency = p99_latency
                 else:
                     # scaled down
                     last_scaled = False
@@ -68,7 +67,7 @@ def autoscale_loop(deployment_name, pod_pattern, namespace="default"):
         else:
             # no action needed
             last_scaled = False
-
+        last_latency = p99_latency
         time.sleep(30)
 
 
